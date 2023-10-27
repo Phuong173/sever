@@ -1,0 +1,1207 @@
+openapi: 3.0.3
+info:
+  title: Swagger CookBook App - OpenAPI 3.0
+  description: |-
+    This is a CookBook App Server based on the OpenAPI 3.0 specification
+  contact:
+    email: nguyensytung2003@gmail.com
+  version: 1.0.11
+servers:
+  - url: https://cook-book-app.vercel.app
+tags:
+  - name: users
+    description: Các API liên quan đến users
+  - name: posts
+    description: Các API liên quan đến posts
+  - name: recipes
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Lấy thông tin users
+      description: Trả về tất cả các bản ghi của user
+      operationId: getAllUsers
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /users/{userId}:
+    get:
+      tags:
+        - users
+      summary: Tìm user bằng ID
+      description: Trả về một bản ghi của user
+      operationId: getUserById
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      parameters:
+        - name: userId
+          in: path
+          description: ID của user
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '404':
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse404'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    delete:
+      tags:
+        - users
+      summary: Xóa user
+      description: Xóa một user bằng ID
+      operationId: deleteUser
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      parameters:
+        - name: userId
+          in: path
+          description: ID của user
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: successful operation
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '404':
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse404'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Đăng nhập
+      description: Đăng nhập hệ thống
+      operationId: Login
+      requestBody:
+        description: Thông tin đăng nhập
+        content:
+          application/json:
+            schema:
+             $ref: '#/components/schemas/CommonResponse500'
+
+
+        required: true
+      responses:
+        '200':
+          description: Đăng nhập thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResponse500'
+    
+            application/xml:
+              schema:
+               $ref: '#/components/schemas/CommonResponse500'
+
+               
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+        '405':
+          description: Validation exception
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Đăng ký tài khoản
+      description: Đăng ký hệ thống
+      operationId: register
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - available
+              - pending
+              - sold
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/CommonResponse500'
+            application/xml:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/CommonResponse500'
+        '400':
+          description: Invalid status value
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /users/setup/{id}:
+    put:
+      tags:
+        - users
+      summary: cập nhật thông tin người dùng
+      description: ''
+      operationId: uploadFile
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /users/edit/{id}:
+    put:
+      tags:
+        - users
+      summary: Sửa thông tin người dùng
+      description: Returns a map of status codes to quantities
+      operationId: getInventory
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+     
+  /post/getpost/{id_user}:
+    get:
+      tags:
+        - post
+      summary: Lấy bài viết theo ID
+      description: ""
+      operationId: getOrderById
+     
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/post'
+#  tung                       
+  /post/getCommentByIdPost:
+    get:
+      tags:
+        - posts
+      summary: Lấy các comment bài viết
+      description: Lấy tất cả các comment thuộc một bài viết bằng Id của post
+      operationId: getAllCommentOfPostByIdPost
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      parameters:
+        - name: id
+          in: query
+          description: Id của post
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': 
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/Comment'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /post/comment:
+    post:
+      tags:
+        - posts
+      summary: Comment bài viết
+      description: Người dùng comment vào một bài viết
+      operationId: addCommentOfPost
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      requestBody:
+        description: Info comment you want create 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/Comment'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /post/comment/{idComment}:
+    patch:
+      tags:
+        - posts  
+      summary: Update comment
+      description: Người dùng update nội dung comment
+      operationId: updateContentComment
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      parameters:
+        - name: idComment
+          in: path
+          description: ID của comment
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Message commnet you want update
+        content:
+          application/json:
+            schema:
+              properties:
+                content:
+                  type: string
+                  example: This is content message update
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                content:
+                  type: string
+                  example: This is content message update
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/Comment'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '404':
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse404'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    delete:
+      tags:
+        - posts
+      summary: Xóa comment 
+      description: Xóa một comment bằng ID
+      operationId: deleteComment
+      security:
+        - token: [ec6b8bb786643eff0ba4f230b279b7dc542f1b62d8e944d319c63467d3c8ed56]
+      parameters:
+        - name: idComment
+          in: path
+          description: ID của Comment
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: successful operation
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '404':
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse404'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+# Phương 
+  /post/getall:
+    get:
+      tags:
+        - post
+      summary: Lấy tất cả bài viết
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      
+      responses:
+         '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/post'
+  /post/addPost:
+    post:
+      tags:
+        - post
+      summary: Đăng bài viết
+      description: ""
+      operationId: createUsersWithListInput
+     
+      responses:
+         '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        $ref: '#/components/schemas/post'
+  /post/delete/{id}:
+    delete:
+      tags:
+        - post
+      summary: Xóa bài viết
+      description: ''
+      operationId: loginUser
+      
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post/likePost:
+    post:
+      tags:
+        - post
+      summary: Like
+      description: ''
+      operationId: loginUser
+     
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post//UnLikePost/:id_user/:id_post:
+    delete:
+      tags:
+        - post
+      summary: Xóa like
+      description: ''
+      operationId: loginUser
+     
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post/getAllLike/:id_post':
+    get:
+      tags:
+        - post
+      summary: tất cả like của một bài viết
+      description: ''
+      operationId: loginUser
+      
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post/getCommentByIdPostt:
+    get:
+      tags:
+        - post
+      summary: tất cả commen
+      description: ''
+      operationId: loginUser
+     
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post//getAllcommentt/:id_post:
+    get:
+      tags:
+        - post
+      summary: tất cả commen của một bài viết
+      description: ''
+      operationId: loginUser
+     
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post/commentt:
+    post:
+      tags:
+        - post
+      summary: thêm bình luận
+      description: ''
+      operationId: loginUser
+      
+      responses:
+       
+        '400':
+          description: Invalid username/password supplied
+  /post/commentt/:id:
+    patch:
+      tags:
+        - post
+      summary: up bình luận
+      description: ''
+      operationId: loginUser
+     
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  /post/commentt/delete/:id:
+    delete:
+      tags:
+        - post
+      summary: xóa bình luận bình luận
+      description: ''
+      operationId: loginUser
+      
+      responses:
+        
+        '400':
+          description: Invalid username/password supplied
+  
+  /recipes/user/:userId:
+    get:
+      tags:
+        - recipes
+      summary: Lấy tất cả công thức theo người dùng
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/recipes'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /recipes:
+    get:
+      tags:
+        - recipes
+      summary: Lấy tất cả công thức 
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/recipes'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    post:
+      tags:
+        - recipes
+      summary: Tạo công thức mới
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/recipes'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /recipes/{id}:
+    get:
+      tags:
+        - recipes
+      summary: Lấy chi tiết công thức
+      description: ''
+      operationId: loginUser
+    
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/recipes'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    put:
+      tags:
+        - recipes
+      summary: cập nhật hoặc sửa công thức
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/recipes'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    delete:
+      tags:
+        - recipes
+      summary: xóa công thức
+      description: ''
+      operationId: loginUser
+      responses:
+        '400':
+          description: Invalid username/password supplied
+  /recipes/{id}/ingredient:
+    post:
+      tags:
+        - recipes
+      summary: thêm nguyên liệu
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/ingredient'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+  /recipes/{id}/ingredient/:ingredientId:
+    put:
+      tags:
+        - recipes
+      summary: sửa nguyên liệu
+      description: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/ingredient'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'
+    delete:
+      tags:
+        - recipes
+      summary: xóa nguyên liệu
+      description: ''
+      operationId: loginUser
+      responses:
+        '400':
+          description: Invalid username/password supplied
+  /recipes/{id}/review:
+    post:
+      tags:
+        - recipes
+      summary: đánh giá
+      description: ''
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/CommonResponse200'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        $ref: '#/components/schemas/review'
+        '401':
+          description: unauthorized or invalid token or token has expired
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse401'
+        '500':
+          description: message error operation or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/CommonResponse500'     
+  /recipes/{id}/review/:reviewId:
+    delete:
+      tags:
+        - recipes
+      summary: xóa đánh giá
+      description: ''
+      responses:
+      
+        '400':
+          description: Invalid username/password supplied
+components:
+  schemas:
+    User:
+      required:
+        - name
+        - email
+        - password
+        - phone
+        - date
+        - avatar
+      type: object
+      properties:
+        _id:
+          type: object
+          example: 6512935f878c6d59414639f1
+        name:
+          type: string
+          example: nstung7323
+        email:
+          type: string
+          example: nguyensytung2003@gmail.com
+        password:
+          type: string
+          example: nstung2003
+        phone:
+          type: string
+          example: "0703200373"
+        date:
+          type: string
+          example: 07/03/2003
+        avatar:
+          type: string
+          example: https:my_url_image
+        createdAt:
+          type: string
+          example: 2023-09-26T08:16:31.602+00:00
+        updatedAt:
+          type: string
+          example: 2023-09-26T08:16:31.602+00:00
+    Comment: 
+      required:
+        - postId
+        - userId
+        - content
+        - parentCommentId
+      type: object
+      properties:
+        _id:
+          type: object
+          example: 6524cff9765269140b3e5097
+        postId: 
+          type: string
+          example: 6512935f878c6d59414639f1
+        userId: 
+          type: string
+          example: 652383b89fb251f2338c36c9
+        content:
+          type: string
+          example: Message comment
+        parentCommentId:
+          type: string
+          example: null or _id of comment
+        createdAt:
+          type: string
+          example: 2023-09-26T08:16:31.602+00:00
+        updatedAt:
+          type: string
+          example: 2023-09-26T08:16:31.602+00:00
+    recipes:
+      required:
+        - _id_user
+        - _id_post
+        - name_food
+        - title
+        - img_url
+        - video_url
+        - time
+        - making
+        - ingredient
+        - evaluate
+      type: object
+      properties:
+        _id:
+          type: object
+          example: 6533440d03494f12a951cb7a
+        _id_user:
+          type: object
+          example: 652383b89fb251f2338c36c9
+        _id_post:
+          type: object
+          example: 6524e1fa765269140b3e50a3
+        name_food:
+          type: string
+          example: Gà chiên  
+        img_url:
+          type: string
+          example: https:my_url_image 
+        video_url:
+          type: string
+          example: https:my_url_image
+        making:
+          type: string
+          example: Cách làm
+        ingredient:
+          type: string
+          example: Aray
+        evaluate:
+          type: string
+          example: Aray
+        createdAt:
+          type: string
+          example: 2023-10-21T03:22:53.529+00:00
+        updatedAt:
+          type: string
+          example: 2023-10-21T03:22:53.529+00:00
+    ingredient:
+        required:
+          - name
+          - quantity
+          - img_url
+        type: object
+        properties:
+          _id:
+            type: object
+            example: 65334741e788e9d864a31b2c
+          name:
+            type: string
+            example: thitk gà  
+          img_url:
+            type: string
+            example: https:my_url_image 
+          quantity:
+            type: string
+            example: 1 
+    review:
+        required:
+         - _id
+        type: object
+        properties:
+          _id:
+            type: object
+            example: 65334764de906844856e8633
+    post: 
+      required:
+        - _id_author
+        - title
+        - content
+        - img
+        - video
+        - likes
+        - comments
+      type: object
+      properties:
+        _id:
+          type: object
+          example: 6512935f878c6d59414639f1
+        _id_author:
+          type: object
+          example: 64e4666e392d9a190e2b875f   
+        title:
+          type: string
+          example: Tiêu đề bài viết
+        content:
+          type: string
+          example: nội dung
+        img:
+          type: string
+          example: https:my_url_image 
+        video:
+          type: string
+          example: https:my_url_image
+        likes:
+          type: string
+          example: Aray
+        comments:
+          type: string
+          example: Aray
+        createdAt:
+          type: string
+          example: 2023-10-21T03:22:53.529+00:00
+        updatedAt:
+          type: string
+          example: 2023-10-21T03:22:53.529+00:00
+     
+    CommonResponse200:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: null
+    CommonResponse401:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: unauthorized or invalid token or token has expired
+        data:
+          type: object
+          example: null
+    CommonResponse404:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: data not found
+        data:
+          type: object
+          example: null
+    CommonResponse500:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: message error operation or server error
+        data:
+          type: object
+          example: null
+
+  securitySchemes:
+    token:
+     type: apiKey
+     name: Authorization
+     in: header
